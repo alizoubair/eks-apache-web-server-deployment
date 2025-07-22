@@ -1,0 +1,46 @@
+version: 0.2
+
+phases:
+  pre_build:
+    commands:
+      - echo Running Terraform module tests...
+      - cd infrastructure/terraform/modules/vpc && terraform init && terraform test
+      - cd ../eks && terraform init && terraform test
+      - cd ../iam && terraform init && terraform test
+      - cd ../eventbridge && terraform init && terraform test
+      - cd ../cicd && terraform init && terraform test
+      - cd ../../../..
+      - echo Logging in to Amazon EKS...
+      - aws eks update-kubeconfig --region $AWS_DEFAULT_REGION --name $CLUSTER_NAME
+      - echo Installing Helm...
+      - curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
+      - echo Check kubectl access
+      - kubectl get svc
+      - echo Installing EBS CSI Driver...
+      - cd infrastructure/terraform
+      - EBS_CSI_ROLE_ARN=$(terraform output -raw csi_driver_role_arn)
+      - cd ../..
+      - aws eks create-addon --cluster-name $CLUSTER_NAME --addon-name aws-ebs-csi-driver --service-account-role-arn $EBS_CSI_ROLE_ARN --region $AWS_DEFAULT_REGION || echo "EBS CSI Driver addon already exists"
+  build:
+    commands:
+      - echo Build started on `date`
+      - echo Adding Helm repositories...
+      - helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+      - helm repo update
+      - echo Installing monitoring stack...
+      - helm upgrade --install monitoring prometheus-community/kube-prometheus-stack --namespace monitoring --create-namespace -f helm_charts/monitoring-values.yaml --timeout 10m
+      - echo Installing ADOT RBAC and Operator...
+      - kubectl apply -f k8s-rbac/adot-rbac.yaml
+      - kubectl apply -f k8s-rbac/adot-operator.yaml
+      - kubectl apply -f k8s-rbac/storage-class.yaml
+      - kubectl wait --for=condition=available --timeout=90s deployment/ebs-csi-controller -n kube-system
+      - echo Installing ADOT collector...
+      - helm repo add open-telemetry https://open-telemetry.github.io/opentelemetry-helm-charts
+      - helm upgrade --install adot-collector open-telemetry/opentelemetry-collector --namespace adot --create-namespace -f helm_charts/adot-values.yaml
+      - echo Deploying application...
+      - helm upgrade --install apache-web-server helm_charts/apache-web-server --namespace default
+  post_build:
+    commands:
+      - echo Build completed on `date`
+      - echo Getting service endpoint...
+      - kubectl get svc apache-web-server-service

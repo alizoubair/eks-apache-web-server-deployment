@@ -1,0 +1,31 @@
+version: 0.2
+
+phases:
+  pre_build:
+    commands:
+      - echo Logging in to Amazon EKS...
+      - aws eks update-kubeconfig --region $AWS_DEFAULT_REGION --name $CLUSTER_NAME
+      - echo Installing test tools...
+      - curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+      - chmod +x kubectl && mv kubectl /usr/local/bin/
+  build:
+    commands:
+      - echo Test started on `date`
+      - echo Testing Kubernetes connectivity...
+      - kubectl get nodes
+      - echo Testing Apache deployment...
+      - kubectl get deployment apache-web-server
+      - kubectl get pods -l app=apache-web-server
+      - echo Testing service availability...
+      - kubectl get svc apache-web-server-service
+      - echo Testing monitoring stack...
+      - kubectl get pods -n monitoring
+      - kubectl get svc -n monitoring
+      - echo Testing ADOT collector...
+      - kubectl get pods -n adot
+      - kubectl logs -n adot deployment/adot-collector --tail=10
+  post_build:
+    commands:
+      - echo Test completed on `date`
+      - echo Checking pod health...
+      - kubectl get pods -l app=apache-web-server -o jsonpath='{.items[*].status.phase}'
