@@ -1,31 +1,28 @@
-version: 0.2
+version:  0.2
 
 phases:
+  install:
+    runtime-versions:
+      python: 3.8
+    commands:
+      - echo "Installing Terraform..."
+      - wget https://releases.hashicorp.com/terraform/1.6.0/terraform_1.6.0_linux_amd64.zip
+      - unzip terraform_1.6.0_linux_amd64.zip
+      - mv terraform /usr/local/bin/
+      - terraform --version
+
   pre_build:
     commands:
-      - echo Logging in to Amazon EKS...
-      - aws eks update-kubeconfig --region $AWS_DEFAULT_REGION --name $CLUSTER_NAME
-      - echo Installing test tools...
-      - curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
-      - chmod +x kubectl && mv kubectl /usr/local/bin/
+      - echo "Initializing Terraform..."
+      - cd infrastructure/terraform
+      - terraform init
+      - terraform validate
   build:
     commands:
-      - echo Test started on `date`
-      - echo Testing Kubernetes connectivity...
-      - kubectl get nodes
-      - echo Testing Apache deployment...
-      - kubectl get deployment apache-web-server
-      - kubectl get pods -l app=apache-web-server
-      - echo Testing service availability...
-      - kubectl get svc apache-web-server-service
-      - echo Testing monitoring stack...
-      - kubectl get pods -n monitoring
-      - kubectl get svc -n monitoring
-      - echo Testing ADOT collector...
-      - kubectl get pods -n adot
-      - kubectl logs -n adot deployment/adot-collector --tail=10
-  post_build:
-    commands:
-      - echo Test completed on `date`
-      - echo Checking pod health...
-      - kubectl get pods -l app=apache-web-server -o jsonpath='{.items[*].status.phase}'
+      - echo "Running Terraform tests for all modules..."
+      - cd infrastructure/terraform/modules/vpc && terraform test
+      - cd infrastructure/terraform/modules/eks && terraform test
+      - cd infrastructure/terraform/modules/iam && terraform test
+      - cd infrastructure/terraform/modules/cicd && terraform test
+      - cd infrastructure/terraform/modules/eventbridge && terraform test
+      - echo "All module tests completed"
