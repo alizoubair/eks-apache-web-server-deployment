@@ -20,8 +20,13 @@ resource "aws_codebuild_project" "codebuild_test_project" {
 
   environment {
     compute_type = "BUILD_GENERAL1_SMALL"
-    image        = "aws/codebuild/standard:2.0"
+    image        = "aws/codebuild/standard:7.0"
     type         = "LINUX_CONTAINER"
+    
+    environment_variable {
+      name  = "GITHUB_REPOSITORY"
+      value = var.github_repository
+    }
   }
   logs_config {
     cloudwatch_logs {
@@ -58,16 +63,21 @@ resource "aws_codebuild_project" "codebuild_deploy_project" {
 
   environment {
     compute_type                = "BUILD_GENERAL1_SMALL"
-    image                       = "aws/codebuild/standard:2.0"
+    image                       = "aws/codebuild/standard:7.0"
     type                        = "LINUX_CONTAINER"
     image_pull_credentials_type = "CODEBUILD"
     privileged_mode             = false
+    
+    environment_variable {
+      name  = "GITHUB_REPOSITORY"
+      value = var.github_repository
+    }
   }
 
   logs_config {
     cloudwatch_logs {
       group_name  = "codebuild-deploy-log-group"
-      stream_name = "codebuild-deploy-log)-stream"
+      stream_name = "codebuild-deploy-log-stream"
     }
 
     s3_logs {
