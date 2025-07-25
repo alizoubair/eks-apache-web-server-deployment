@@ -1,3 +1,28 @@
+mock_provider "aws" {
+  mock_data "aws_iam_openid_connect_provider" {
+    defaults = {
+      arn = "arn:aws:iam::123456789012:oidc-provider/oidc.eks.us-west-2.amazonaws.com/id/EXAMPLE"
+      client_id_list = ["sts.amazonaws.com"]
+      thumbprint_list = ["9e99a48a9960b14926bb7f3b02e22da2b0ab7280"]
+      url = "https://oidc.eks.us-west-2.amazonaws.com/id/EXAMPLE"
+    }
+  }
+  
+  mock_data "aws_caller_identity" {
+    defaults = {
+      account_id = "123456789012"
+      arn = "arn:aws:iam::123456789012:user/test"
+      user_id = "AIDACKCEVSQ6C2EXAMPLE"
+    }
+  }
+  
+  mock_data "aws_region" {
+    defaults = {
+      name = "us-west-2"
+    }
+  }
+}
+
 run "iam_validation" {
   command = plan
 
