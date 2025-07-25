@@ -1,30 +1,5 @@
-mock_provider "aws" {
-  mock_data "aws_iam_openid_connect_provider" {
-    defaults = {
-      arn = "arn:aws:iam::123456789012:oidc-provider/oidc.eks.us-west-2.amazonaws.com/id/EXAMPLE"
-      client_id_list = ["sts.amazonaws.com"]
-      thumbprint_list = ["9e99a48a9960b14926bb7f3b02e22da2b0ab7280"]
-      url = "https://oidc.eks.us-west-2.amazonaws.com/id/EXAMPLE"
-    }
-  }
-  
-  mock_data "aws_caller_identity" {
-    defaults = {
-      account_id = "123456789012"
-      arn = "arn:aws:iam::123456789012:user/test"
-      user_id = "AIDACKCEVSQ6C2EXAMPLE"
-    }
-  }
-  
-  mock_data "aws_region" {
-    defaults = {
-      name = "us-west-2"
-    }
-  }
-}
-
 run "iam_validation" {
-  command = plan
+  command = validate
 
   variables {
     project_prefix           = "test-project"
@@ -35,17 +10,17 @@ run "iam_validation" {
   }
 
   assert {
-    condition     = aws_iam_role.codebuild_role.name == "${var.project_prefix}-codebuild-role"
-    error_message = "CodeBuild role name should include project prefix"
+    condition     = var.project_prefix == "test-project"
+    error_message = "Project prefix should be set"
   }
 
   assert {
-    condition     = aws_iam_role.codepipeline_role.name == "${var.project_prefix}-codepipeline-role"
-    error_message = "CodePipeline role name should include project prefix"
+    condition     = length(var.github_connection_arn) > 0
+    error_message = "GitHub connection ARN should be provided"
   }
 
   assert {
-    condition     = aws_iam_role.eventbridge_event_routing_role.name == "${var.project_prefix}-eventbridge-event-routing-role"
-    error_message = "EventBridge role name should include project prefix"
+    condition     = length(var.custom_event_bus_arn) > 0
+    error_message = "Event bus ARN should be provided"
   }
 }

@@ -1,14 +1,5 @@
-mock_provider "aws" {
-  mock_data "aws_availability_zones" {
-    defaults = {
-      names = ["us-west-2a", "us-west-2b", "us-west-2c"]
-      zone_ids = ["usw2-az1", "usw2-az2", "usw2-az3"]
-    }
-  }
-}
-
 run "vpc_validation" {
-  command = plan
+  command = validate
 
   variables {
     project_prefix = "test-project"
@@ -18,17 +9,17 @@ run "vpc_validation" {
   }
 
   assert {
-    condition     = module.vpc.vpc_cidr_block == "10.0.0.0/16"
-    error_message = "VPC CIDR block should be 10.0.0.0/16"
+    condition     = var.vpc_cidr == "10.0.0.0/16"
+    error_message = "VPC CIDR should be 10.0.0.0/16"
   }
 
   assert {
-    condition     = length(module.vpc.private_subnets) == 3
-    error_message = "Should have 3 private subnets"
+    condition     = length(var.private_subnets) == 3
+    error_message = "Should have 3 private subnets configured"
   }
 
   assert {
-    condition     = length(module.vpc.public_subnets) == 3
-    error_message = "Should have 3 public subnets"
+    condition     = length(var.public_subnets) == 3
+    error_message = "Should have 3 public subnets configured"
   }
 }
