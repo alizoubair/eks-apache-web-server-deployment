@@ -1,5 +1,5 @@
 run "iam_validation" {
-  command = validate
+  command = plan
 
   variables {
     project_prefix           = "test-project"
