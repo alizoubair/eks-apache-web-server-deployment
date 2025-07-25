@@ -19,15 +19,10 @@ phases:
       - terraform validate
   build:
     commands:
-      - echo "Current directory and contents:"
-      - pwd
-      - ls -la
-      - echo "Looking for infrastructure directory:"
-      - find . -name "infrastructure" -type d
       - echo "Running Terraform tests for all modules..."
-      - cd infrastructure/terraform/modules/vpc && terraform init && terraform test
-      - cd infrastructure/terraform/modules/eks && terraform init && terraform test
-      - cd infrastructure/terraform/modules/iam && terraform init && terraform test
-      - cd infrastructure/terraform/modules/cicd && terraform init && terraform test
-      - cd infrastructure/terraform/modules/eventbridge && terraform init && terraform test
+      - cd modules/vpc && terraform init && terraform test
+      - cd modules/eks && terraform init && terraform test
+      - cd modules/iam && terraform init && terraform test
+      - cd modules/cicd && terraform init && terraform test
+      - cd modules/eventbridge && terraform init && terraform test
       - echo "All module tests completed"
