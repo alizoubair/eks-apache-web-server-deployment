@@ -2,36 +2,36 @@
 
 Complete CI/CD pipeline for deploying Apache web server on Amazon EKS with monitoring.
 
-## Architecture
+## 🏗️ Architecture
 
-- **Infrastructure**: AWS VPC + EKS cluster
-- **Application**: Apache web server (Helm chart)
-- **Monitoring**: Prometheus + Grafana stack
-- **Observability**: AWS Distro for OpenTelemetry (ADOT) collector
-- **CI/CD**: CodePipeline + EventBridge automation
+- **Infrastructure**: ☁️ AWS VPC + EKS cluster
+- **Application**: 🌐 Apache web server (Helm chart)
+- **Monitoring**: 📊 Prometheus + Grafana stack
+- **Observability**: 🔍 AWS Distro for OpenTelemetry (ADOT) collector
+- **CI/CD**: ⚙️ CodePipeline + EventBridge automation
 
-## Prerequisites
+## 📋 Prerequisites
 
-- AWS CLI configured
-- Terraform >= 1.0
-- kubectl
-- Helm 3.x
+- ☁️ AWS CLI configured
+- 🏗️ Terraform >= 1.0
+- ⚡ kubectl
+- ⎈ Helm 3.x
 
-## Quick Start
+## 🚀 Quick Start
 
-### 1. Deploy Infrastructure
+### 1️⃣ Deploy Infrastructure
 ```bash
 terraform init
 terraform plan
 terraform apply
 ```
 
-### 2. Configure kubectl
+### 2️⃣ Configure kubectl
 ```bash
 aws eks update-kubeconfig --region <region> --name <cluster-name>
 ```
 
-### 3. Deploy Applications
+### 3️⃣ Deploy Applications
 ```bash
 # Install EBS CSI Driver
 aws eks create-addon \
@@ -60,30 +60,30 @@ helm upgrade --install adot-collector open-telemetry/opentelemetry-collector \
 helm upgrade --install apache-web-server helm_charts/apache-web-server
 ```
 
-## Components
+## 🧩 Components
 
-### Infrastructure (Terraform)
+### 🏗️ Infrastructure (Terraform)
 - **vpc.tf**: VPC with public/private subnets
 - **eks_cluster.tf**: EKS cluster with managed node groups
 - **eventbridge.tf**: CI/CD automation for main branch pushes
 - **csi_driver.tf**: EBS CSI driver IAM role and policy
 
-### Application (Helm)
+### 📦 Application (Helm)
 - **apache-web-server/**: Custom Helm chart
   - Configurable replicas, resources
   - LoadBalancer service
   - ServiceMonitor for Prometheus
 
-### Monitoring
+### 📊 Monitoring
 - **Prometheus**: Metrics collection with 30-day retention
 - **Grafana**: Visualization with pre-configured dashboards
 - **AlertManager**: Alert routing and notifications
 - **ADOT Collector**: AWS Distro for OpenTelemetry metrics collection
 - **CloudWatch**: AWS native metrics storage and monitoring
 
-## Access Services
+## 🔗 Access Services
 
-### Grafana Dashboard
+### 📊 Grafana Dashboard
 ```bash
 kubectl port-forward -n monitoring svc/monitoring-grafana 3000:80
 ```
@@ -91,13 +91,13 @@ kubectl port-forward -n monitoring svc/monitoring-grafana 3000:80
 - Username: admin
 - Password: admin123
 
-### Prometheus
+### 🔍 Prometheus
 ```bash
 kubectl port-forward -n monitoring svc/monitoring-kube-prometheus-prometheus 9090:9090
 ```
 - URL: http://localhost:9090
 
-### Apache Web Server
+### 🌐 Apache Web Server
 ```bash
 # Get the LoadBalancer external IP/hostname
 kubectl get svc apache-web-server-service
@@ -109,12 +109,12 @@ kubectl port-forward svc/apache-web-server-service 8080:80
 Access via LoadBalancer external IP/hostname in your browser: http://<EXTERNAL-IP>
 Or if using port-forwarding: http://localhost:8080
 
-### CloudWatch Metrics
+### ☁️ CloudWatch Metrics
 - Navigate to AWS CloudWatch Console
 - Check `EKS/Apache` namespace for custom metrics
 - View container insights for cluster metrics
 
-## Pre-configured Dashboards
+## 📈 Pre-configured Dashboards
 
 - **Kubernetes Cluster Overview**
 - **Kubernetes Pods**
@@ -123,7 +123,7 @@ Or if using port-forwarding: http://localhost:8080
 - **Kubernetes Ingress**
 - **Apache Overview**
 
-### Apache Dashboard
+### 🌐 Apache Dashboard
 
 The Apache Overview dashboard provides comprehensive monitoring of your Apache web server instances:
 
@@ -136,13 +136,13 @@ The Apache Overview dashboard provides comprehensive monitoring of your Apache w
 
 This dashboard helps you monitor Apache performance, identify bottlenecks, and troubleshoot issues in real-time. All metrics are collected via the Apache exporter which transforms Apache's server-status data into Prometheus-compatible metrics.
 
-## CI/CD Pipeline
+## 🔄 CI/CD Pipeline
 
-### Trigger
+### ⚡ Trigger
 - Automatic deployment on push to `main` branch
 - EventBridge monitors GitHub repository events
 
-### Pipeline Steps
+### 📝 Pipeline Steps
 1. Install Helm
 2. Install EBS CSI Driver
 3. Add Prometheus Helm repository
@@ -150,12 +150,12 @@ This dashboard helps you monitor Apache performance, identify bottlenecks, and t
 5. Deploy Apache application
 6. Verify deployments
 
-### Configuration
+### ⚙️ Configuration
 - **deployspec.yml**: CodeBuild specification
 - **monitoring-values.yaml**: Prometheus/Grafana configuration
 - **apache-web-server/values.yaml**: Application configuration
 
-### GitHub Connection Setup
+### 🔗 GitHub Connection Setup
 
 Before the CI/CD pipeline can access your GitHub repository, you need to authorize the connection:
 
@@ -170,9 +170,9 @@ Before the CI/CD pipeline can access your GitHub repository, you need to authori
 
 After completing these steps, your pipeline will be able to access your GitHub repository and will automatically trigger on pushes to the main branch.
 
-## Customization
+## 🎛️ Customization
 
-### Scaling Apache
+### 📈 Scaling Apache
 Edit `helm_charts/apache-web-server/values.yaml`:
 ```yaml
 replicaCount: 5
@@ -182,7 +182,7 @@ resources:
     memory: "128Mi"
 ```
 
-### Monitoring Retention
+### 💾 Monitoring Retention
 Edit `helm_charts/monitoring-values.yaml`:
 ```yaml
 prometheus:
@@ -196,27 +196,27 @@ prometheus:
               storage: 100Gi
 ```
 
-## Troubleshooting
+## 🔧 Troubleshooting
 
-### Check Pod Status
+### 🔍 Check Pod Status
 ```bash
 kubectl get pods -A
 ```
 
-### View Logs
+### 📋 View Logs
 ```bash
 kubectl logs -n monitoring deployment/monitoring-grafana
 kubectl logs deployment/apache-web-server
 ```
 
-### Helm Status
+### ⎈ Helm Status
 ```bash
 helm list -A
 helm status monitoring -n monitoring
 helm status apache-web-server
 ```
 
-## Cleanup
+## 🧹 Cleanup
 
 ```bash
 # Use the cleanup script to remove all LoadBalancer services before terraform destroy
@@ -234,26 +234,26 @@ The cleanup script will:
 
 This ensures that all AWS resources are properly removed before running `terraform destroy`.
 
-## ADOT Configuration
+## 🔍 ADOT Configuration
 
-### IAM Requirements
+### 🔐 IAM Requirements
 - OIDC provider for EKS cluster
 - IAM role with `AmazonPrometheusRemoteWriteAccess` policy
 - Service account annotation for IAM role assumption
 
-### Kubernetes RBAC
+### 🛡️ Kubernetes RBAC
 - ClusterRole for API access (nodes, pods, services)
 - ClusterRoleBinding to ADOT service account
 - Permissions for metrics endpoint access
 
-### Metrics Export
+### 📊 Metrics Export
 - **Prometheus**: Local cluster storage via remote write
 - **CloudWatch**: AWS native metrics in `EKS/Apache` namespace
 - **Dual export**: Enables both Grafana dashboards and CloudWatch alarms
 
-### Using OpenTelemetry
+### 🔍 Using OpenTelemetry
 
-#### Viewing ADOT Collector Status
+#### 👀 Viewing ADOT Collector Status
 ```bash
 # Check ADOT collector pods
 kubectl get pods -n adot
@@ -266,12 +266,12 @@ kubectl port-forward -n adot svc/adot-collector-opentelemetry-collector 8888:888
 # Then access http://localhost:8888/metrics in your browser
 ```
 
-#### Accessing Collected Metrics
+#### 📊 Accessing Collected Metrics
 - **In Prometheus**: Query metrics with `apache_` prefix
 - **In CloudWatch**: Navigate to CloudWatch console → Metrics → Custom namespaces → EKS/Apache
 - **In Grafana**: Use the pre-configured Apache Overview dashboard (3894)
 
-## Security Notes
+## 🔒 Security Notes
 
 - Change default Grafana password in production
 - Configure proper RBAC for services
