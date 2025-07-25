@@ -10,17 +10,17 @@ run "iam_validation" {
   }
 
   assert {
-    condition     = aws_iam_role.adot_collector_role.name == "${var.project_prefix}-adot-collector-role"
-    error_message = "ADOT collector role name should include project prefix"
-  }
-
-  assert {
     condition     = aws_iam_role.codebuild_role.name == "${var.project_prefix}-codebuild-role"
     error_message = "CodeBuild role name should include project prefix"
   }
 
   assert {
-    condition     = length(aws_iam_openid_connect_provider.eks.client_id_list) > 0
-    error_message = "OIDC provider should have client IDs configured"
+    condition     = aws_iam_role.codepipeline_role.name == "${var.project_prefix}-codepipeline-role"
+    error_message = "CodePipeline role name should include project prefix"
+  }
+
+  assert {
+    condition     = aws_iam_role.eventbridge_event_routing_role.name == "${var.project_prefix}-eventbridge-event-routing-role"
+    error_message = "EventBridge role name should include project prefix"
   }
 }
