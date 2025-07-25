@@ -1,3 +1,12 @@
+mock_provider "aws" {
+  mock_data "aws_availability_zones" {
+    defaults = {
+      names = ["us-west-2a", "us-west-2b", "us-west-2c"]
+      zone_ids = ["usw2-az1", "usw2-az2", "usw2-az3"]
+    }
+  }
+}
+
 run "vpc_validation" {
   command = plan
 
