@@ -20,6 +20,10 @@ phases:
   build:
     commands:
       - echo "Running Terraform tests for all modules..."
-      - cd infrastructure/terraform/modules/cicd && terraform test
-      - cd infrastructure/terraform/modules/eventbridge && terraform test
+      - cd infrastructure/terraform
+      - cd modules/vpc && terraform init && terraform test
+      - cd ../eks && terraform init && terraform test
+      - cd ../iam && terraform init && terraform test
+      - cd ../cicd && terraform init && terraform test
+      - cd ../eventbridge && terraform init && terraform test
       - echo "All module tests completed"
