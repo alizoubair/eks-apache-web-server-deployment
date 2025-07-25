@@ -10,6 +10,8 @@ run "eks_validation" {
     node_min_size = 1
     node_max_size = 3
     node_desired_size = 2
+    admin_user_name = "test-admin"
+    account_id = "123456789012"
   }
 
   assert {
