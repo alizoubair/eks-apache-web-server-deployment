@@ -331,14 +331,20 @@ resource "aws_iam_role_policy" "codepipeline_policy" {
   })
 }
 
-# Get OIDC provider data - handle case where it might not exist yet
+# Create OIDC resources only when URL is provided
+resource "terraform_data" "oidc_trigger" {
+  input = var.cluster_oidc_issuer_url != "" ? var.cluster_oidc_issuer_url : null
+}
+
 data "aws_iam_openid_connect_provider" "eks" {
-  url = var.cluster_oidc_issuer_url
+  count = terraform_data.oidc_trigger.input != null ? 1 : 0
+  url   = terraform_data.oidc_trigger.input
 }
 
 # ADOT Collector IAM Role for service account
 resource "aws_iam_role" "adot_collector_role" {
-  name = "${var.project_prefix}-adot-collector-role"
+  count = terraform_data.oidc_trigger.input != null ? 1 : 0
+  name  = "${var.project_prefix}-adot-collector-role"
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
@@ -347,12 +353,12 @@ resource "aws_iam_role" "adot_collector_role" {
         Action = "sts:AssumeRoleWithWebIdentity"
         Effect = "Allow"
         Principal = {
-          Federated = data.aws_iam_openid_connect_provider.eks.arn
+          Federated = data.aws_iam_openid_connect_provider.eks[0].arn
         }
         Condition = {
           StringEquals = {
-            "${replace(data.aws_iam_openid_connect_provider.eks.url, "https://", "")}:sub" = "system:serviceaccount:adot:adot-collector-opentelemetry-collector"
-            "${replace(data.aws_iam_openid_connect_provider.eks.url, "https://", "")}:aud" = "sts.amazonaws.com"
+            "${replace(var.cluster_oidc_issuer_url, "https://", "")}:sub" = "system:serviceaccount:amazon-cloudwatch:adot-collector"
+            "${replace(var.cluster_oidc_issuer_url, "https://", "")}:aud" = "sts.amazonaws.com"
           }
         }
       }
@@ -369,6 +375,7 @@ resource "aws_iam_role" "adot_collector_role" {
 
 # Attach managed policy for Prometheus remote write access
 resource "aws_iam_role_policy_attachment" "adot_collector_policy" {
-  role       = aws_iam_role.adot_collector_role.name
+  count      = terraform_data.oidc_trigger.input != null ? 1 : 0
+  role       = aws_iam_role.adot_collector_role[0].name
   policy_arn = "arn:aws:iam::aws:policy/AmazonPrometheusRemoteWriteAccess"
 }
