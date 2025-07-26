@@ -151,6 +151,30 @@ resource "aws_iam_role" "eks_codebuild_role" {
   }
 }
 
+# IAM Policy for EKS CodeBuild role
+resource "aws_iam_role_policy" "eks_codebuild_policy" {
+  name = "${var.project_prefix}-eks-codebuild-policy"
+  role = aws_iam_role.eks_codebuild_role.id
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow",
+        Action = [
+          "ec2:DescribeAvailabilityZones",
+          "ec2:DescribeVpcs",
+          "ec2:DescribeSubnets",
+          "ec2:DescribeSecurityGroups",
+          "ec2:DescribeRouteTables",
+          "ec2:DescribeInternetGateways",
+          "ec2:DescribeNatGateways"
+        ],
+        Resource = ["*"]
+      }
+    ]
+  })
+}
+
 # IAM Policy for CodePipeline to invoke pipeline
 resource "aws_iam_role_policy" "codebuild_policy" {
   name = "${var.project_prefix}-codebuild-policy"
