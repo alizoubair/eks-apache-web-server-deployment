@@ -50,3 +50,13 @@ variable "account_id" {
   description = "AWS account ID"
   type        = string
 }
+
+variable "github_access_token" {
+  description = "GitHub access token parameter store path"
+  type        = string
+}
+
+variable "admin_user_name" {
+  description = "Admin user name for EKS access"
+  type        = string
+}

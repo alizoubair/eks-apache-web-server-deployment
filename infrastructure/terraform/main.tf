@@ -18,6 +18,8 @@ module "cicd" {
   github_repository     = var.github_repository
   account_id            = local.account_id
   region                = local.region
+  admin_user_name       = var.admin_user_name
+  github_access_token   = var.github_access_token
 }
 
 # EKS Module

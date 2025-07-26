@@ -72,6 +72,17 @@ resource "aws_codebuild_project" "codebuild_deploy_project" {
       name  = "GITHUB_REPOSITORY"
       value = var.github_repository
     }
+    
+    environment_variable {
+      name  = "GITHUB_ACCESS_TOKEN"
+      value = var.github_access_token
+      type  = "PARAMETER_STORE"
+    }
+    
+    environment_variable {
+      name  = "ADMIN_USER_NAME"
+      value = var.admin_user_name
+    }
   }
 
   logs_config {
