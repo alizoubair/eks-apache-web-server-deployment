@@ -3,7 +3,7 @@ run "iam_validation" {
 
   variables {
     project_prefix           = "test-project"
-    cluster_oidc_issuer_url  = "https://oidc.eks.us-west-2.amazonaws.com/id/EXAMPLE"
+    cluster_oidc_issuer_url  = null
     custom_event_bus_arn     = "arn:aws:events:us-west-2:123456789012:event-bus/test-bus"
     github_connection_arn    = "arn:aws:codestar-connections:us-west-2:123456789012:connection/test-connection"
     codepipeline_name        = "test-pipeline"
