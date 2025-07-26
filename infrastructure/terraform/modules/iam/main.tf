@@ -258,6 +258,19 @@ resource "aws_iam_role_policy" "codebuild_policy" {
           "sts:GetCallerIdentity"
         ],
         Resource = ["*"]
+      },
+      {
+        Effect = "Allow",
+        Action = [
+          "ec2:DescribeAvailabilityZones",
+          "ec2:DescribeVpcs",
+          "ec2:DescribeSubnets",
+          "ec2:DescribeSecurityGroups",
+          "ec2:DescribeRouteTables",
+          "ec2:DescribeInternetGateways",
+          "ec2:DescribeNatGateways"
+        ],
+        Resource = ["*"]
       }
     ]
   })
