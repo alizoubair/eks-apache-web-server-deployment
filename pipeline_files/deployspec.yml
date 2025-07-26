@@ -17,6 +17,7 @@ phases:
       - cd infrastructure/terraform
       - terraform init
       - terraform validate
+
   build:
     commands:
       - echo "Stage 1: Applying EKS cluster and dependencies..."
