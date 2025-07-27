@@ -1,0 +1,5 @@
+apiVersion: v2
+name: apache-web-server
+description: Apache Web Server Helm Chart
+version: 0.1.0
+appVersion: "2.4"
