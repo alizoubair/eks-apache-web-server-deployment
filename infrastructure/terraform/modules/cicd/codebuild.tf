@@ -76,7 +76,6 @@ resource "aws_codebuild_project" "codebuild_deploy_project" {
     environment_variable {
       name  = "GITHUB_ACCESS_TOKEN"
       value = var.github_access_token
-      type  = "PARAMETER_STORE"
     }
     
     environment_variable {
