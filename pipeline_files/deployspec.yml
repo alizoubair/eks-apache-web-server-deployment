@@ -8,9 +8,7 @@ phases:
       - echo "Using pre-installed AWS CLI version:"
       - aws --version
 
-      - echo "Installing kubectl..."
-      - curl -LO "https://dl.k8s.io/release/$(curl -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
-      - chmod +x kubectl && mv kubectl /usr/local/bin/
+      - echo "Check kubectl version"
       - kubectl version --client
 
       - echo "Installing Helm..."
