@@ -1,0 +1,32 @@
+replicaCount: 2
+
+image:
+  repository: httpd
+  tag: "2.4"
+  pullPolicy: IfNotPresent
+
+exporter:
+  image:
+    repository: lusotycoon/apache-exporter
+    tag: v0.8.0
+    pullPolicy: IfNotPresent
+  resources:
+    requests:
+      memory: "32Mi"
+      cpu: "100m"
+    limits:
+      memory: "64Mi"
+      cpu: "200m"
+
+service:
+  type: LoadBalancer
+  port: 80
+  name: http
+
+resources:
+  requests:
+    memory: "64Mi"
+    cpu: "250m"
+  limits:
+    memory: "128Mi"
+    cpu: "500m"
