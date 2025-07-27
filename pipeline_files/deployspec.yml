@@ -21,20 +21,14 @@ phases:
       - aws eks update-kubeconfig --region $AWS_REGION --name $EKS_CLUSTER_NAME
 
       - echo "Installing EBS CSI driver addon..."
-      - aws eks create-addon \
-        --cluster-name $EKS_CLUSTER_NAME \
-        --addon-name aws-ebs-csi-driver \
-        --service-account-role-arn $CSI_DRIVER_ROLE_ARN \
-        --region $AWS_REGION || echo "EBS CSI driver addon already exists or failed to install"
+      - aws eks create-addon --cluster-name $EKS_CLUSTER_NAME --addon-name aws-ebs-csi-driver --service-account-role-arn $CSI_DRIVER_ROLE_ARN --region $AWS_REGION || echo "EBS CSI driver addon already exists or failed to install"
 
   build:
     commands:
       - echo "Deploying Prometheus monitoring stack..."
       - helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
       - helm repo update
-      - helm upgrade --install monitoring prometheus-community/kube-prometheus-stack \
-        --namespace monitoring --create-namespace \
-        -f helm_charts/monitoring-values.yaml --timeout 10m
+      - helm upgrade --install monitoring prometheus-community/kube-prometheus-stack --namespace monitoring --create-namespace -f helm_charts/monitoring-values.yaml --timeout 10m
 
       - echo "Applying ADOT RBAC configuration..."
       - kubectl apply -f k8s-rbac/adot-rbac.yaml
@@ -42,13 +36,10 @@ phases:
       - echo "Deploying ADOT Collector..."
       - helm repo add open-telemetry https://open-telemetry.github.io/opentelemetry-helm-charts
       - helm repo update
-      - helm upgrade --install adot-collector open-telemetry/opentelemetry-collector \
-        --namespace adot --create-namespace \
-        -f helm_charts/adot-values.yaml
+      - helm upgrade --install adot-collector open-telemetry/opentelemetry-collector --namespace adot --create-namespace -f helm_charts/adot-values.yaml
 
       - echo "Deploying Apache web server..."
-      - helm upgrade --install apache-web-server helm_charts/apache-web-server \
-        --namespace $K8S_NAMESPACE --create-namespace
+      - helm upgrade --install apache-web-server helm_charts/apache-web-server --namespace $K8S_NAMESPACE --create-namespace
 
   post_build:
     commands:
