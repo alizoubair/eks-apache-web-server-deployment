@@ -24,3 +24,7 @@ phases:
       - terraform apply -target=module.vpc -target=module.eks -target=module.cicd -target=module.eventbridge -auto-approve -var="github_repository=${GITHUB_REPOSITORY}" -var="github_access_token=${GITHUB_ACCESS_TOKEN}" -var="admin_user_name=${ADMIN_USER_NAME}"
       - echo "Stage 2: Applying remaining resources including OIDC-dependent IAM resources..."
       - terraform apply -auto-approve -var="github_repository=${GITHUB_REPOSITORY}" -var="github_access_token=${GITHUB_ACCESS_TOKEN}" -var="admin_user_name=${ADMIN_USER_NAME}"
+
+  post_build:
+    commands:
+      - echo "Deployment completed successfully"
