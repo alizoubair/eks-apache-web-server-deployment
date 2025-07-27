@@ -1,0 +1,20 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: {{ include "apache-web-server.fullname" . }}
+  labels:
+    app: {{ include "apache-web-server.name" . }}
+    release: monitoring
+spec:
+  selector:
+    matchLabels:
+      app: {{ include "apache-web-server.name" . }}
+  endpoints:
+  - port: http
+    path: /server-status
+    interval: 15s
+    scrapeTimeout: 10s
+    metricRelabelings:
+    - sourceLabels: [__name__]
+      regex: apache_.*
+      action: keep
