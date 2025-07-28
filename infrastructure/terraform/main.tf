@@ -18,8 +18,8 @@ module "cicd" {
   github_repository     = var.github_repository
   account_id            = local.account_id
   region                = local.region
-  admin_user_name       = var.admin_user_name
-  github_access_token   = var.github_access_token
+  cluster_name          = module.eks.cluster_name
+  csi_driver_role_arn   = module.csi_driver.ebs_csi_role_arn
 }
 
 # EKS Module

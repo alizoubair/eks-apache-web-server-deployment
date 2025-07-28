@@ -69,18 +69,23 @@ resource "aws_codebuild_project" "codebuild_deploy_project" {
     privileged_mode             = false
     
     environment_variable {
-      name  = "GITHUB_REPOSITORY"
-      value = var.github_repository
+      name  = "AWS_REGION"
+      value = var.region
     }
     
     environment_variable {
-      name  = "GITHUB_ACCESS_TOKEN"
-      value = var.github_access_token
+      name  = "EKS_CLUSTER_NAME"
+      value = var.cluster_name
     }
     
     environment_variable {
-      name  = "ADMIN_USER_NAME"
-      value = var.admin_user_name
+      name  = "ASSUME_ROLE_ARN"
+      value = var.codebuild_role_arn
+    }
+
+    environment_variable {
+      name  = "CSI_DRIVER_ROLE_ARN"
+      value = var.csi_driver_role_arn
     }
   }
 

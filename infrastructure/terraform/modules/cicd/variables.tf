@@ -51,12 +51,12 @@ variable "account_id" {
   type        = string
 }
 
-variable "github_access_token" {
-  description = "GitHub access token parameter store path"
+variable "cluster_name" {
+  description = "Name of the EKS cluster"
   type        = string
 }
 
-variable "admin_user_name" {
-  description = "Admin user name for EKS access"
+variable "csi_driver_role_arn" {
+  description = "Amazon EKS CSI driver IAM role ARN"
   type        = string
 }
