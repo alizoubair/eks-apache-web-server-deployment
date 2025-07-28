@@ -20,6 +20,9 @@ phases:
       - echo "Authenticating with EKS..."
       - mkdir -p $HOME/.kube
       - aws eks update-kubeconfig --region $AWS_REGION --name $EKS_CLUSTER_NAME
+      - kubectl cluster-info
+      - kubectl get nodes
+
 
       # Generate token and store cluster info
       - echo "Generating EKS authentication token..."
