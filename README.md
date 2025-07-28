@@ -31,7 +31,25 @@ terraform apply
 aws eks update-kubeconfig --region <region> --name <cluster-name>
 ```
 
-### 3️⃣ Deploy Applications
+### 3️⃣ Grant CodeBuild Access to EKS
+After creating the EKS cluster, allow the CodeBuild role to interact with it. You’ll need to allow-list the service role associated with the build project(s) by adding the IAM principal to access your Cluster’s aws-auth config-map or using EKS Access Entries (recommended):
+```bash
+# Create an access entry so the specified IAM role can interact with the EKS cluster
+aws eks create-access-entry \
+        --cluster-name <cluster-name> \
+        --principal-arn <codebuild_role_arn> \
+        --region <region> || echo "Access entry might already exist"
+        
+# Associate the IAM role with an EKS access policy        
+aws eks associate-access-policy \
+          --cluster-name <cluster-name> \
+          --principal-arn <codebuild_role_arn> \
+          --policy-arn arn:aws:eks::aws:cluster-access-policy/AmazonEKSClusterAdminPolicy \
+          --access-scope type=cluster \
+          --region <region> || echo "Access policy might already be attached"
+```
+
+### 4️⃣ Deploy Applications
 ```bash
 # Install EBS CSI Driver
 aws eks create-addon \
