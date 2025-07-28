@@ -259,6 +259,7 @@ resource "aws_iam_role_policy" "codebuild_policy" {
       {
         Effect = "Allow",
         Action = [
+          "eks:CreateAddon",
           "eks:DescribeCluster",
           "eks:ListClusters",
           "eks:UpdateClusterConfig",
