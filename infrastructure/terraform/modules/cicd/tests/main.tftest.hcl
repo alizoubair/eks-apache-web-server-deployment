@@ -8,8 +8,8 @@ run "cicd_validation" {
     github_repository     = "test-repo"
     region               = "us-west-2"
     account_id           = "123456789012"
-    github_access_token  = "/test/github-token"
-    admin_user_name      = "test-admin"
+    cluster_name  = "test-eks-apache-cluster"
+    csi_driver_role_arn      = "arn:aws:iam::123456789012:role/test-csi-driver-role"
   }
 
   assert {
