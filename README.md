@@ -141,9 +141,25 @@ Or if using port-forwarding: http://localhost:8080
 - **Kubernetes Ingress**
 - **Apache Overview**
 
+
+###  Kubernetes Cluster Dashboard
+
+The Kubernetes Cluster Dashboard provides a high-level view of the health, resource usage, and activity across your entire Kubernetes environment:
+
+![Kubernetes Cluster Dashboard](./assets/kubernetes-dashboard.png)
+
+**Key Metrics:**
+- **Node Metrics**: CPU, memory, disk usage per node
+- **Cluster Health**: Number of running pods, pending pods, failed pods
+- **Performance**: CPU usage, memory consumption, and response times
+
+This dashboard helps you monitor the overall state of your Kubernetes cluster, identify unhealthy components, and proactively respond to resource or performance issues. It relies on Prometheus metrics collected via kube-state-metrics, node-exporter, and cAdvisor.
+
 ### 🌐 Apache Dashboard
 
 The Apache Overview dashboard provides comprehensive monitoring of your Apache web server instances:
+
+![Apache Dashboard](./assets/apache-dashboard.png)
 
 **Key Metrics:**
 - **Server Status**: Uptime, workers, and requests per second
@@ -187,6 +203,11 @@ Before the CI/CD pipeline can access your GitHub repository, you need to authori
 8. Click "Connect"
 
 After completing these steps, your pipeline will be able to access your GitHub repository and will automatically trigger on pushes to the main branch.
+
+### 🛠️ CI/CD Pipeline Execution
+After running `terraform apply`, the following screenshot shows a successful CodePipeline execution:
+
+![Pipeline Success](./assets/pipeline-success.png)
 
 ## 🎛️ Customization
 
