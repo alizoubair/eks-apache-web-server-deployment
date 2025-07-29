@@ -296,6 +296,14 @@ resource "aws_iam_role_policy" "codebuild_policy" {
           "ec2:DescribeNatGateways"
         ],
         Resource = ["*"]
+      },
+      {
+        "Effect" : "Allow",
+        "Action" : [
+          "eks:CreateAccessEntry",
+          "eks:AssociateAccessPolicy"
+        ],
+        "Resource" : "*"
       }
     ]
   })
