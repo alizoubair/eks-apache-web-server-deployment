@@ -3,7 +3,11 @@
 Complete CI/CD pipeline for deploying Apache web server on Amazon EKS with monitoring.
 
 ## 🏗️ Architecture
+The project is deployed on a highly available Amazon EKS (Elastic Kubernetes Service) cluster that spans three Availability Zones (AZs) to ensure fault tolerance and improved resilience.
 
+![Architecture Overview](./assets/architecture.png)
+
+Key Components of the Architecture:
 - **Infrastructure**: ☁️ AWS VPC + EKS cluster
 - **Application**: 🌐 Apache web server (Helm chart)
 - **Monitoring**: 📊 Prometheus + Grafana stack
